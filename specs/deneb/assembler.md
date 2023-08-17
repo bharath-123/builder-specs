@@ -106,7 +106,7 @@ def merge_txs(signed_tob_bid: SignedBuilderBid, signed_rob_bid: SignedBuilderBid
     return tob_bid_txs + rob_bid_txs
 ```
 
-We do not specify how to get the final payload from the tx list obtained from the above. That is mostly related to execution layer things.
+We do not specify how to get the final payload from the tx list obtained from the above. That activity is left to the implementor.
 
 Below we define how to merge the bids and get an aggregated builder bid. In this stage, we also have the latest execution payload header which is 
 built from the tx list generated from merge_txs. The final bid pubkey is a BLS aggregate of the tob builder pub key and rob builder pub key 
