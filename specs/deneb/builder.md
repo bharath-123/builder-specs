@@ -89,7 +89,7 @@ Note: `SignedBuilderBid` is updated indirectly.
 Note: In the case, the `proposer_builder_commitment` is `TOB_ROB_BLOCK` which indicates that the TOB and ROB of a block is built by 2 separate builders. 
 The relayer will get seperate bids for the TOB and ROB part of the block. The final block which the proposer will use will be assembled by a block assembler. 
 The `BuilderBid` will contain the `header` and `blinded_blobs_bundle` post the assembling of the TOB and ROB bids. 
-The `value` is the sum of the TOB bid value and the ROB bid value.
+The `value` is the sum of the TOB bid value, and the ROB bid value.
 The `pubkey` is the BLS aggregate of the builder pubkeys. 
 
 ```python
@@ -110,6 +110,7 @@ class SignedBuilderBid(Container):
     message: BuilderBid
     signature: BLSSignature # if this bid is built by the TOB_ROB_BLOCK, then this signature is the BLS aggregate of the builder signatures
 ```
+
 
 #### `ExecutionPayloadHeader`
 
