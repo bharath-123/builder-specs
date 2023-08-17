@@ -28,7 +28,6 @@ Deneb:
         minItems: 0
         maxItems: 6
 
-
   BlobsBundle:
     allOf:
       - $ref: '#/Deneb/BlobsBundleCommon'

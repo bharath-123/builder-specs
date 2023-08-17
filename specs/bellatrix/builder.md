@@ -75,33 +75,14 @@ Bellatrix).
 
 #### Bellatrix
 
-##### `BuilderSegmentBid`
+##### `BuilderBid`
 
 ```python
-class BuilderSegmentBid(Container):
+class BuilderBid(Container): 
     header: ExecutionPayloadHeader
     value: uint256
     pubkey: BLSPubkey
 ```
-
-##### `BuilderAggregateBid`
-
-```python
-class BuilderAggregateBid(Container):
-    header: ExecutionPayloadHeader # this is the header built by the block assembler
-    tob_builder_pubkey: BLSPubkey
-    rob_builder_pubkey: BLSPubkey
-    value: uint256 # this is tob_header value + rob_header value
-```
-
-##### `SignedBuilderAggregateBid`
-
-```python
-class SignedBuilderAggregateBid(Container):
-    message: BuilderAggregateBid
-    signature: BLSSignature # this is an aggregate bls signature of the tob and rob builder pubkey
-```
-
 
 ##### `SignedBuilderBid`
 

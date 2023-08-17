@@ -19,6 +19,10 @@ Bellatrix:
             description: "`ExecutionPayloadHeader` to use in block proposal."
       - $ref: '#/Bellatrix/BuilderBidCommon'
 
+  BuilderBidWithProposerCommitments:
+    description: "The `BuilderBid` object with proposer commitments"
+
+
   SignedBuilderBid:
     type: object
     description: "The `SignedBuilderBid` object from the Builder API spec."
