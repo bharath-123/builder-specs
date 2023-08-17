@@ -51,6 +51,33 @@ def is_tx_in_bundle(tx: Transaction) -> bool:
     pass
 ```
 
+```python
+def check_state_interference(signed_tob_bid: SignedBuilderBid, signed_rob_bid: SignedBuilderBid):
+    """
+    Ensure tob bid has only uniswap swap txs at the top. It shouldn't have bundles, blob txs and meta txs.
+    Ensure rob bid has no unswap swap txs. We can include bundles and blob txs.
+    This method can be treated as a black box and can be evolved as we go along with developing pepc-boost.
+    """    
+    # TODO - Figure out how to check for bundle
+    # TODO- Develop this method as we go along
+    tob_bid = signed_tob_bid.message
+    rob_bid = signed_rob_bid.message
+    
+    # check that there are no blob bundles for tob_bid
+    assert len(tob_bid.blob_bundles) == 0
+    
+    tob_bid_txs = tob_bid.header.transctions
+    rob_bid_txs = rob_bid.header.transactions
+
+    for tob_bid_tx in tob_bid_txs:
+        assert !is_tx_blob(tob_bid_tx)
+        assert is_tx_uniswap_swap(tob_bid_tx)
+        assert !is_tx_in_bundle(tob_bid_tx)
+    
+    for rob_bid_tx in rob_bid_txs:
+        assert !is_tx_uniswap_swap(rob_bid_tx)
+```
+
 Below we define a method to check if the tob and rob builder bids which are to be sent to the assembler to build an aggregate builder bid are compaitable and valid.
 
 ```python
@@ -72,30 +99,8 @@ def validate_bids(signed_tob_bid: BuilderBid, signed_rob_bid: BuilderBid) -> boo
     rob_validator_payout = rob_bid_txs[no_of_rob_bid_txs - 1]
     assert tob_validator_payout.value == tob_bid.value
     assert rob_validator_payout.value == rob_bid.value
-```
 
-```python
-def check_state_interference(signed_tob_bid: SignedBuilderBid, signed_rob_bid: SignedBuilderBid):
-    """
-    Ensure tob bid has only uniswap swap txs at the top. It shouldn't have bundles, blob txs and meta txs.
-    Ensure rob bid has no unswap swap txs. We can include bundles and blob txs.
-    This method can be treated as a black box and can be evolved as we go along with developing pepc-boost.
-    """    
-    # TODO - Figure out how to check for bundle
-    # TODO- Develop this method as we go along
-    tob_bid = signed_tob_bid.message
-    rob_bid = signed_rob_bid.message
-    
-    tob_bid_txs = tob_bid.header.transctions
-    rob_bid_txs = rob_bid.header.transactions
-
-    for tob_bid_tx in tob_bid_txs:
-        assert !is_tx_blob(tob_bid_tx)
-        assert is_tx_uniswap_swap(tob_bid_tx)
-        assert !is_tx_in_bundle(tob_bid_tx)
-    
-    for rob_bid_tx in rob_bid_txs:
-        assert !is_tx_uniswap_swap(rob_bid_tx)
+    check_state_interference(signed_tob_bid, signed_rob_bid)
 ```
 
 Below we define how to merge the tob_bid and rob_bid to get the transaction list which should be used to apply to the state and create a block out
