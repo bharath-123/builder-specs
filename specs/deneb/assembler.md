@@ -21,6 +21,10 @@ It can be implemented as an RPC call in an execution client. Although the execut
 2. Building blocks
 3. Tx gossip
 
+It should only be responsible for:
+1. Validating the TOB and ROB bid txs for state interference
+2. Creating a final block from the merged tx lists of the TOB and ROB bid
+
 It should be connected to a beacon node client to stay up to date with the latest block. It should be synced.
 
 ## TOB and ROB Validation
