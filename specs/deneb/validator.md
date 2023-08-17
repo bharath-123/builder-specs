@@ -10,7 +10,6 @@
 - [Validator registration](#validator-registration)
   - [Preparing a registration](#preparing-a-registration)
   - [Signing and submitting a registration](#signing-and-submitting-a-registration)
-  - [Registration dissemination](#registration-dissemination)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
