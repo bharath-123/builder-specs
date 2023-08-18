@@ -86,29 +86,30 @@ class ExecutionPayloadAndBlobsBundle(Container):
 
 Note: `SignedBuilderBid` is updated indirectly. 
 
-Note: In the case, the `proposer_builder_commitment` is `TOB_ROB_BLOCK` which indicates that the TOB and ROB of a block is built by 2 separate builders. 
+Note: In the case, the `proposer_builder_commitment` is `TOB_ROB_SPLIT` which indicates that the TOB and ROB of a block is built by 2 separate builders. 
 The relayer will get seperate bids for the TOB and ROB part of the block. The final block which the proposer will use will be assembled by a block assembler. 
 The `BuilderBid` will contain the `header` and `blinded_blobs_bundle` post the assembling of the TOB and ROB bids. 
 The `value` is the sum of the TOB bid value, and the ROB bid value.
 The `pubkey` is the BLS aggregate of the builder pubkeys. 
+If the `proposer_builder_commitment` for the validator is `FULL_BLOCK`, then this is akin to the BuilderBids we have in the current MEV Relayer.
 
 ```python
-class BuilderBid(Container): # if the validator preference is a TOB_ROB_BLOCK, then this bid is built when the highest value TOB and ROB bid from different builders are assembled by the assmebler
+class BuilderBid(Container): # if the validator preference is a TOB_ROB_SPLIT, then this bid is built when the highest value TOB and ROB bid from different builders are assembled by the assembler
     header: ExecutionPayloadHeader # [Modified in Deneb]
     blinded_blobs_bundle: BlindedBlobsBundle  # [New in Deneb]
-    value: uint256 # if this bid is built by the TOB_ROB_BLOCK commitment, then this value is the sum of TOB bid value and ROB bid value.
-    pubkey: BLSPubkey # if this bid is built by the TOB_ROB_BLOCK commitment, then the pubkey is a BLS aggregate of the builder keys.
+    value: uint256 # if this bid is built by the TOB_ROB_SPLIT commitment, then this value is the sum of TOB bid value and ROB bid value.
+    pubkey: BLSPubkey # if this bid is built by the TOB_ROB_SPLIT commitment, then the pubkey is a BLS aggregate of the builder keys.
 ```
 
 ##### `SignedBuilderBid`
 
-Note: In the case, the `proposer_builder_commitment` is `TOB_ROB_BLOCK`
+Note: In the case, the `proposer_builder_commitment` is `TOB_ROB_SPLIT`
 The `signature` field is the BLS aggregate signature of the builder signatures.
 
 ```python
 class SignedBuilderBid(Container):
     message: BuilderBid
-    signature: BLSSignature # if this bid is built by the TOB_ROB_BLOCK, then this signature is the BLS aggregate of the builder signatures
+    signature: BLSSignature # if this bid is built by the TOB_ROB_SPLIT, then this signature is the BLS aggregate of the builder signatures
 ```
 
 

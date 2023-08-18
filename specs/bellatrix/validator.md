@@ -33,7 +33,7 @@ participate in an external builder network.
 At a high-level, there is a registration step validators must perform ahead of any proposal duties so builders know how
 to craft blocks for their specific proposal. Having performed the registration, a validator waits until it is their turn
 to propose the next block in the chain. During the registration, a validator specifies a commitment which indicates the type of block
-they want. for e.g: FULL_BLOCK indicates that the proposer wants a full block from 1 builder. TOB_ROB_BLOCK indicates 
+they want. for e.g: FULL_BLOCK indicates that the proposer wants a full block from 1 builder. TOB_ROB_SPLIT indicates 
 that the proposer wants a block where the TOB and ROB section of the block has been built by separate builders. The relayer is responsible
 for ensuring that the commitment is fulfilled by the validator by validating the block that the builder sends.
 The builder reads these commitments from the validator registration object and builds a block which matches to commitment specified
