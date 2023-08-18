@@ -81,15 +81,15 @@ def check_state_interference(signed_tob_bid: SignedBuilderBid, signed_rob_bid: S
 Below we define a method to check if the tob and rob builder bids which are to be sent to the assembler to build an aggregate builder bid are compaitable and valid.
 
 ```python
-def validate_bids(signed_tob_bid: BuilderBid, signed_rob_bid: BuilderBid) -> bool:
+def validate_bids(signed_tob_bid: BuilderBid, signed_rob_bid: BuilderBid, max_validator_gas_limit: uint64) -> bool:
     tob_bid = signed_tob_bid.message
     rob_bid = signed_rob_bid.message
     assert tob_bid.pubkey != rob_bid.pubkey # the bids shouldn't be from the same builder
     assert tob_bid.header.parent_hash == rob_bid.header.parent_hash
     assert tob_bid.header.timestamp == rob_bid.header.timestamp
     # check gas limit
-    assert tob_bid.header.gas_used < 15000000
-    assert rob_bid.header.gas_used < 15000000
+    assert tob_bid.header.gas_used < max_validator_gas_limit / 2
+    assert rob_bid.header.gas_used < max_validator_gas_limit / 2
     # we can avoid checking blob gas since we are restricting blobs only to ROB and also given that blobs work in a seperate gas fee market
     tob_bid_txs = tob_bid.header.transctions
     rob_bid_txs = rob_bid.header.transactions
