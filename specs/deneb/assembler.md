@@ -103,6 +103,8 @@ def validate_bids(signed_tob_bid: BuilderBid, signed_rob_bid: BuilderBid) -> boo
     check_state_interference(signed_tob_bid, signed_rob_bid)
 ```
 
+## Final Bid Building
+
 Below we define how to merge the tob_bid and rob_bid to get the transaction list which should be used to apply to the state and create a block out
 
 ```python
@@ -115,7 +117,9 @@ def merge_txs(signed_tob_bid: SignedBuilderBid, signed_rob_bid: SignedBuilderBid
     return tob_bid_txs + rob_bid_txs
 ```
 
-We do not specify how to get the final payload from the tx list obtained from the above. That activity is left to the implementor.
+We do not specify how to get the final payload from the tx list obtained from the above. That activity is left to the implementor. The implementor of the assembler
+has to set the fee recipient of the block to the relayers address. All the MEV rewards should go the relayer. The relayer should be responsible for paying out the validator
+and the builder. The builder can add the validator and builder payouts to the end of the TOB and ROB bid. 
 
 Below we define how to merge the bids and get an aggregated builder bid. In this stage, we also have the latest execution payload header which is 
 built from the tx list generated from merge_txs. The final bid pubkey is a BLS aggregate of the tob builder pub key and rob builder pub key 
