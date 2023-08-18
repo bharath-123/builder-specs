@@ -91,9 +91,10 @@ The relayer will get seperate bids for the TOB and ROB part of the block. The fi
 The `BuilderBid` will contain the `header` and `blinded_blobs_bundle` post the assembling of the TOB and ROB bids. 
 The `value` is the sum of the TOB bid value, and the ROB bid value.
 The `pubkey` is the BLS aggregate of the builder pubkeys. 
+If the `proposer_builder_commitment` for the validator is `FULL_BLOCK`, then this is akin to the BuilderBids we have in the current MEV Relayer.
 
 ```python
-class BuilderBid(Container): # if the validator preference is a TOB_ROB_SPLIT, then this bid is built when the highest value TOB and ROB bid from different builders are assembled by the assmebler
+class BuilderBid(Container): # if the validator preference is a TOB_ROB_SPLIT, then this bid is built when the highest value TOB and ROB bid from different builders are assembled by the assembler
     header: ExecutionPayloadHeader # [Modified in Deneb]
     blinded_blobs_bundle: BlindedBlobsBundle  # [New in Deneb]
     value: uint256 # if this bid is built by the TOB_ROB_SPLIT commitment, then this value is the sum of TOB bid value and ROB bid value.
