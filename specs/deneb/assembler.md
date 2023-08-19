@@ -76,10 +76,10 @@ def check_state_interference(tob_bid_execution_payload: ExecutionPayload, rob_bi
         assert !is_tx_uniswap_swap(rob_bid_tx)
 ```
 
-Below we define a method to check if the tob and rob builder bids which are to be sent to the assembler to build an aggregate builder bid are compaitable and valid.
+Below we define a method to check if the tob and rob builder bids which are to be sent to the assembler to build an aggregate builder bid are compatible and valid.
 
 ```python
-def validate_bids(signed_tob_bid: BuilderBid, signed_rob_bid: BuilderBid, validator_registration: ValidatorRegistrationV2) -> bool:
+def validate_bids(signed_tob_bid: BuilderBid, tob_bid_execution_payload: ExecutionPayload, signed_rob_bid: BuilderBid, rob_bid_execution_payload: ExecutionPayload, validator_registration: ValidatorRegistrationV2) -> bool:
     tob_bid = signed_tob_bid.message
     rob_bid = signed_rob_bid.message
     assert tob_bid.pubkey != rob_bid.pubkey # the bids shouldn't be from the same builder
