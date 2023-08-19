@@ -14,16 +14,17 @@
 ## Introduction
 
 The assembler is a component which is used in parallel block auctions based proposer builder commitments. It is used to concatenate the txs of multiple
-bids and build an aggregated payload. It sends the aggregated payload to the relayer which builds an aggregated bid.
+bids and build an aggregated execution payload. This aggregated execution payload is sent to the relayer. The relayer then builds an aggregated bid using the
+sent aggregated execution payload.
 It is also responsible for validating the txs of the multiple bids for state interference.
 It can be implemented as an RPC call in an execution client. Although the execution client would have to be stripped of from the following capabilities:
-1. Receiving txs to its mempool
-2. Building blocks
-3. Tx gossip
+1. Receiving txs to its mempool. The payloads only need to be built by txs sent by the relayer.
+2. Building payloads through the engine api. Payloads should only be built when the bids are sent by the relayer.
+3. Receiving txs from peers. 
 
 It should only be responsible for:
 1. Validating the TOB and ROB bid txs for state interference
-2. Creating a final block from the merged tx lists of the TOB and ROB bid
+2. Creating an aggregated execution payload from the merged tx lists of the TOB and ROB bid
 
 It should be connected to a beacon node client to stay up to date with the latest block. It should be synced.
 
@@ -78,15 +79,15 @@ def check_state_interference(tob_bid_execution_payload: ExecutionPayload, rob_bi
 Below we define a method to check if the tob and rob builder bids which are to be sent to the assembler to build an aggregate builder bid are compaitable and valid.
 
 ```python
-def validate_bids(signed_tob_bid: BuilderBid, tob_bid_execution_payload: ExecutionPayload, signed_rob_bid: BuilderBid, rob_bid_execution_payload: ExecutionPaylod, max_validator_gas_limit: uint64) -> bool:
+def validate_bids(signed_tob_bid: BuilderBid, signed_rob_bid: BuilderBid, validator_registration: ValidatorRegistrationV2) -> bool:
     tob_bid = signed_tob_bid.message
     rob_bid = signed_rob_bid.message
     assert tob_bid.pubkey != rob_bid.pubkey # the bids shouldn't be from the same builder
     assert tob_bid.header.parent_hash == rob_bid.header.parent_hash
     assert tob_bid.header.timestamp == rob_bid.header.timestamp
     # check gas limit
-    assert tob_bid.header.gas_used < max_validator_gas_limit / 2
-    assert rob_bid.header.gas_used < max_validator_gas_limit / 2
+    assert tob_bid.header.gas_used < validator_registration.gas_limit / 2
+    assert rob_bid.header.gas_used < validator_registration.gas_limit / 2
     # we can avoid checking blob gas since we are restricting blobs only to ROB and also given that blobs work in a seperate gas fee market
     tob_bid_txs = tob_bid_execution_payload.transctions
     rob_bid_txs = rob_bid_execution_payload.transactions
