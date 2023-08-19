@@ -14,7 +14,7 @@
 ## Introduction
 
 The assembler is a component which is used in parallel block auctions based proposer builder commitments. It is used to concatenate the txs of multiple
-bids and build a block and an aggregated bid out of them.
+bids and build an aggregated payload. It sends the aggregated payload to the relayer which builds an aggregated bid.
 It is also responsible for validating the txs of the multiple bids for state interference.
 It can be implemented as an RPC call in an execution client. Although the execution client would have to be stripped of from the following capabilities:
 1. Receiving txs to its mempool
