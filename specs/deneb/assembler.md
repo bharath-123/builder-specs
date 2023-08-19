@@ -121,12 +121,12 @@ Below we define how to merge the bids and get an aggregated builder bid. In this
 built from the tx list generated from merge_txs. The final bid pubkey is a BLS aggregate of the tob builder pub key and rob builder pub key 
 
 ```python
-def merge_bids(signed_tob_bid: SignedBuilderBid, signed_rob_bid: SignedBuilderBid, final_payload_header: ExecutionPayloadHeader, final_blinded_blobs_bundle: BlindedBlobsBundle) -> SignedBuilderBid:
+def merge_bids(signed_tob_bid: SignedBuilderBid, signed_rob_bid: SignedBuilderBid, aggregate_payload_header: ExecutionPayloadHeader, final_blinded_blobs_bundle: BlindedBlobsBundle) -> SignedBuilderBid:
     tob_bid = signed_tob_bid.message
     rob_bid = signed_rob_bid.message
     
     new_bid = BuilderBid(
-        header=final_payload_header,
+        header=aggregate_payload_header,
         blinded_blobs=final_blinded_blobs_bundle,
         value = tob_bid.value + rob_bid.value,
         pubkey = Bls.Aggregate(tob_bid.pubkey, rob_bid.pubkey)
@@ -140,6 +140,6 @@ def merge_bids(signed_tob_bid: SignedBuilderBid, signed_rob_bid: SignedBuilderBi
     return new_signed_bid
 ```
 
-The assembler will return the final payload which is obtained when we apply the tx list we received by merging the tob and rob tx list. We can derive
+The assembler will return the aggregated payload which is obtained when we apply the tx list we received by merging the tob and rob tx list. We can derive
 the payload headers from the final payload. Using this, we can merge the tob and rob bids to generate the final bid. This final bid is an aggregation 
-of the tob and rob bid. It contains the final generated payload header, the total value of both bid, and the aggregated BLS pubkeys and signatures.
+of the tob and rob bid. It contains the aggregated payload header, the total value of both bid, and the aggregated BLS pubkeys and signatures.
