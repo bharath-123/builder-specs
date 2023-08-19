@@ -87,7 +87,7 @@ class ExecutionPayloadAndBlobsBundle(Container):
 Note: `SignedBuilderBid` is updated indirectly. 
 
 Note: In the case, the `proposer_builder_commitment` is `TOB_ROB_SPLIT` which indicates that the TOB and ROB of a block is built by 2 separate builders. 
-The relayer will get seperate bids for the TOB and ROB part of the block. The final block which the proposer will use will be assembled by a block assembler. 
+The relayer will get seperate bids for the TOB and ROB part of the block. The final payload which the proposer will use will be assembled by the payload assembler. 
 The `BuilderBid` will contain the `header` and `blinded_blobs_bundle` post the assembling of the TOB and ROB bids. 
 The `value` is the sum of the TOB bid value, and the ROB bid value.
 The `pubkey` is the BLS aggregate of the builder pubkeys. 
@@ -143,7 +143,7 @@ The `proposer_builder_commitment` field is added which indicates the type of blo
 of `FULL_BLOCK` indicates that the proposer wants the highest possible value block built by 1 builder(which is the status quo). Another example, is a proposer_builder_commitment
 of `TOB_ROB_SPLIT`. This commitment indicates that the proposer wants a block where the TOB(top of the block) and ROB(rest of the block) is built by 2 seperate builders
 to reduce TOB MEV opportunities and make block building more decentralized.
-The validity of commitment should be handled by the trusted relay. The relay should reject blocks built by builders which do not validate the commitments indicated
+The validity of commitment should be handled by the trusted relay. The relay should reject payloads built by builders which do not validate the commitments indicated
 by proposers. The proposer should trust the relay that the block has fulfilled their commitments.
 
 ```python
@@ -170,6 +170,7 @@ With the addition of `proposer_builder_commitment`
 ### `verify_proposer_builder_commitment`
 
 The list of commitments should be stored in the trusted relayer so that builders can access the proposer commitments to build the suitable block
+Below the proposer_builder_commitments list should be stored in the relayer.
 
 ```python
 def verify_proposer_builder_commitment(state: BeaconState, signed_registration: SignedValidatorRegistrationV2, proposer_builder_commitments: string[]) -> bool:
