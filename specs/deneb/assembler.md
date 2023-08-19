@@ -52,22 +52,19 @@ def is_tx_in_bundle(tx: Transaction) -> bool:
 ```
 
 ```python
-def check_state_interference(signed_tob_bid: SignedBuilderBid, signed_rob_bid: SignedBuilderBid):
+def check_state_interference(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_payload: ExecutionPaylod):
     """
     Ensure tob bid has only uniswap swap txs at the top. It shouldn't have bundles, blob txs and meta txs.
     Ensure rob bid has no unswap swap txs. We can include bundles and blob txs.
     This method can be treated as a black box and can be evolved as we go along with developing pepc-boost.
     """    
     # TODO - Figure out how to check for bundle
-    # TODO- Develop this method as we go along
-    tob_bid = signed_tob_bid.message
-    rob_bid = signed_rob_bid.message
-    
+    # TODO- Develop this method as we go along    
     # check that there are no blob bundles for tob_bid
     assert len(tob_bid.blob_bundles) == 0
     
-    tob_bid_txs = tob_bid.header.transctions
-    rob_bid_txs = rob_bid.header.transactions
+    tob_bid_txs = tob_bid_execution_payload.transctions
+    rob_bid_txs = rob_bid_execution_payload.transactions
 
     for tob_bid_tx in tob_bid_txs:
         assert !is_tx_blob(tob_bid_tx)
@@ -91,8 +88,8 @@ def validate_bids(signed_tob_bid: BuilderBid, signed_rob_bid: BuilderBid, valida
     assert tob_bid.header.gas_used < validator_registration.gas_limit / 2
     assert rob_bid.header.gas_used < validator_registration.gas_limit / 2
     # we can avoid checking blob gas since we are restricting blobs only to ROB and also given that blobs work in a seperate gas fee market
-    tob_bid_txs = tob_bid.header.transctions
-    rob_bid_txs = rob_bid.header.transactions
+    tob_bid_txs = tob_bid_execution_payload.transctions
+    rob_bid_txs = rob_bid_execution_payload.transactions
     no_of_tob_bid_txs = len(tob_bid_txs)
     no_of_rob_bid_txs = len(rob_bid_txs)
     tob_validator_payout = tob_bid_txs[no_of_tob_bid_txs - 1]
@@ -108,11 +105,9 @@ def validate_bids(signed_tob_bid: BuilderBid, signed_rob_bid: BuilderBid, valida
 Below we define how to merge the tob_bid and rob_bid to get the transaction list which should be used to apply to the state and create a block out
 
 ```python
-def merge_txs(signed_tob_bid: SignedBuilderBid, signed_rob_bid: SignedBuilderBid) -> Transaction[]:
-    tob_bid = signed_tob_bid.message
-    rob_bid = signed_rob_bid.message
-    tob_bid_txs = tob_bid.transctions
-    rob_bid_txs = rob_bid.transactions
+def merge_txs(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_payload: ExecutionPaylod) -> Transaction[]:
+    tob_bid_txs = tob_bid_execution_payload.transactions
+    rob_bid_txs = rob_bid_execution_payload.transactions
 
     return tob_bid_txs + rob_bid_txs
 ```
