@@ -173,7 +173,7 @@ The list of commitments should be stored in the trusted relayer so that builders
 Below the proposer_builder_commitments list should be stored in the relayer.
 
 ```python
-def verify_proposer_builder_commitment(state: BeaconState, signed_registration: SignedValidatorRegistrationV2, proposer_builder_commitments: string[]) -> bool:
+def verify_proposer_builder_commitment(signed_registration: SignedValidatorRegistrationV2, proposer_builder_commitments: string[]) -> bool:
     return signed_registration.proposer_builder_commitment in proposer_builder_commitments # the list of commitments should be known in the builder n/w
 ```
 
