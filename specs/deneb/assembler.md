@@ -14,16 +14,17 @@
 ## Introduction
 
 The assembler is a component which is used in parallel block auctions based proposer builder commitments. It is used to concatenate the txs of multiple
-bids and build a block and an aggregated bid out of them.
+bids and build an aggregated execution payload. This aggregated execution payload is sent to the relayer. The relayer then builds an aggregated bid using the
+sent aggregated execution payload.
 It is also responsible for validating the txs of the multiple bids for state interference.
 It can be implemented as an RPC call in an execution client. Although the execution client would have to be stripped of from the following capabilities:
-1. Receiving txs to its mempool
-2. Building blocks
-3. Tx gossip
+1. Receiving txs to its mempool. The payloads only need to be built by txs sent by the relayer.
+2. Building payloads through the engine api. Payloads should only be built when the bids are sent by the relayer.
+3. Receiving txs from peers. 
 
 It should only be responsible for:
 1. Validating the TOB and ROB bid txs for state interference
-2. Creating a final block from the merged tx lists of the TOB and ROB bid
+2. Creating an aggregated execution payload from the merged tx lists of the TOB and ROB bid
 
 It should be connected to a beacon node client to stay up to date with the latest block. It should be synced.
 
