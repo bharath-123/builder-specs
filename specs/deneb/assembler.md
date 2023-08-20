@@ -129,12 +129,12 @@ def merge_bids(signed_tob_bid: SignedBuilderBid, signed_rob_bid: SignedBuilderBi
         header=aggregate_payload_header,
         blinded_blobs=final_blinded_blobs_bundle,
         value = tob_bid.value + rob_bid.value,
-        pubkey = Bls.Aggregate(tob_bid.pubkey, rob_bid.pubkey)
+        pubkey = bls.Aggregate(tob_bid.pubkey, rob_bid.pubkey)
     )
     
     new_signed_bid = SignedBuilderBid(
         message = new_bid,
-        signature = Bls.Aggregate(signed_tob_bid.signature, signed_rob_bid.signature)
+        signature = bls.Aggregate(signed_tob_bid.signature, signed_rob_bid.signature)
     )
 
     return new_signed_bid
