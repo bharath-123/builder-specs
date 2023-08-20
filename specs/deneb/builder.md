@@ -227,6 +227,3 @@ The following conditions apply to the `FULL_BLOCK` commitment
 1. The builder MUST build an execution payload whose `gas_limit` is equal to the `gas_limit` of the latest registration for `pubkey` or as close as possibl.e under the consensus rules.
 The following conditions apply to the `TOB_ROB_SPLIT` commitment
 1. The builder MUST build ROB and TOB bids whose execution payloads each do not exceed `gas_limit / 2` where `gas_limit` is equal to the `gas_limit` of the latest registration for `pubkey.
-
-
-[comment]: <> (The builder MUST build an execution payload whose `gas_limit` is equal to the `gas_limit` of the latest registration for `pubkey`, or as close as is possible under the consensus rules.)
