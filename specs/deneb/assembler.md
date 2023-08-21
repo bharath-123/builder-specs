@@ -52,6 +52,10 @@ def is_tx_in_bundle(tx: Transaction) -> bool:
     pass
 ```
 
+In the payload assembler, we merge txs sent by TOB and ROB builders and build one aggregated execution payload. The txs sent by the multiple builders could have
+state interference which could cause an invalid state transition. To avoid such a scenario, we enforce certain rules on the type of txs which can be added to the 
+TOB bid execution payload to avoid state interference.
+
 ```python
 def check_state_interference(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_payload: ExecutionPaylod):
     """
