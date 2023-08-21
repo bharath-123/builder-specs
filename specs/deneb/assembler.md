@@ -26,12 +26,12 @@ It should only be responsible for:
 1. Validating the TOB and ROB bid txs for state interference
 2. Creating an aggregated execution payload from the merged tx lists of the TOB and ROB bid
 
-It should be connected to a beacon node client to stay up to date with the latest block. It should be synced.
+It should be connected to a beacon node client to stay updated with the latest block. It should be synced.
 
 ## TOB and ROB Validation
 
-Below we define a method which takes in 2 bids. A TOB(Top of block) bid and ROB(Rest of block) bid. We can expand it to n bids later
-in the future. 
+Below we define a method which takes in 2 bids, A TOB(Top of block) bid and ROB(Rest of block) bid and checks
+for state interference. We can expand it to n bids later in the future. 
 
 We also define a few helper methods
 
@@ -92,8 +92,8 @@ def validate_bids(signed_tob_bid: BuilderBid, tob_bid_execution_payload: Executi
     # check gas limit
     assert tob_bid.header.gas_used < validator_registration.gas_limit / 2
     assert rob_bid.header.gas_used < validator_registration.gas_limit / 2
-    # we can avoid checking blob gas since we are restricting blobs only to ROB and also given that blobs work in a seperate gas fee market
-    tob_bid_txs = tob_bid_execution_payload.transctions
+    # we can avoid checking blob gas since we are restricting blobs only to ROB and also given that blobs work in a separate gas fee market
+    tob_bid_txs = tob_bid_execution_payload.transactions
     rob_bid_txs = rob_bid_execution_payload.transactions
     no_of_tob_bid_txs = len(tob_bid_txs)
     no_of_rob_bid_txs = len(rob_bid_txs)
@@ -107,7 +107,8 @@ def validate_bids(signed_tob_bid: BuilderBid, tob_bid_execution_payload: Executi
 
 ## Final Bid Building
 
-Below we define how to merge the tob_bid and rob_bid to get the transaction list which should be used to apply to the state and create a block out
+Below we define how to merge the tob_bid and rob_bid to get the transaction list which should be used to apply to the state and create an aggregated
+execution payload out of
 
 ```python
 def merge_txs(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_payload: ExecutionPayload) -> Transaction[]:
@@ -145,5 +146,5 @@ def merge_bids(signed_tob_bid: SignedBuilderBid, signed_rob_bid: SignedBuilderBi
 ```
 
 The assembler will return the aggregated payload which is obtained when we apply the tx list we received by merging the tob and rob tx list. We can derive
-the payload headers from the final payload. Using this, we can merge the tob and rob bids to generate the final bid. This final bid is an aggregation 
+the payload headers from the final payload. We can merge the tob and rob bids to generate the final bid. This final bid is an aggregation 
 of the tob and rob bid. It contains the aggregated payload header, the total value of both bid, and the aggregated BLS pubkeys and signatures.
