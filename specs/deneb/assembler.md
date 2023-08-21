@@ -35,7 +35,7 @@ in the future.
 
 We also define a few helper methods
 
-TODO - fix the object references
+TODO - Define state interference methods. We can black box them for now in `check_state_interference`
 
 ```python
 def is_tx_blob(tx: Transaction) -> bool:
@@ -106,7 +106,7 @@ def validate_bids(signed_tob_bid: BuilderBid, tob_bid_execution_payload: Executi
 Below we define how to merge the tob_bid and rob_bid to get the transaction list which should be used to apply to the state and create a block out
 
 ```python
-def merge_txs(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_payload: ExecutionPaylod) -> Transaction[]:
+def merge_txs(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_payload: ExecutionPayload) -> Transaction[]:
     tob_bid_txs = tob_bid_execution_payload.transactions
     rob_bid_txs = rob_bid_execution_payload.transactions
 
