@@ -118,6 +118,8 @@ def merge_txs(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_pay
     return tob_bid_txs + rob_bid_txs
 ```
 
+We can use the withdrawal list of either the TOB or ROB bid because they should be built on the same parent block
+
 ```python
 def merge_withdrawals(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_payload: ExecutionPayload) -> List[Transaction]:
     tob_withdrawals = tob_bid_execution_payload.withdrawals
