@@ -43,7 +43,12 @@ def is_tx_blob(tx: Transaction) -> bool:
 ```
 
 ```python
-def is_tx_uniswap_swap(tx: Transaction) -> bool:
+def is_tx_uniswap_eth_usdc_swap(tx: Transaction) -> bool:
+    pass
+```
+
+```python
+def is_tx_meta(tx: Transaction) -> bool:
     pass
 ```
 
@@ -56,10 +61,13 @@ In the payload assembler, we merge txs sent by TOB and ROB builders and build on
 state interference which could cause an invalid state transition. To avoid such a scenario, we enforce certain rules on the type of txs which can be added to the 
 TOB bid execution payload to avoid state interference.
 
+For the first iteration, we will enforce only one ETH/USDC uniswap swap tx in the TOB bid and no ETH/USDC uniswap swap tx in the ROB bid. We can develop
+this as we go along.
+
 ```python
 def check_state_interference(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_payload: ExecutionPaylod):
     """
-    Ensure tob bid has only uniswap swap txs at the top. It shouldn't have bundles, blob txs and meta txs.
+    Ensure tob bid has only one uniswap ETH/USDC swap tx at the top. It shouldn't have bundles, blob txs and meta txs.
     Ensure rob bid has no unswap swap txs. We can include bundles and blob txs.
     This method can be treated as a black box and can be evolved as we go along with developing pepc-boost.
     """    
@@ -67,14 +75,16 @@ def check_state_interference(tob_bid_execution_payload: ExecutionPayload, rob_bi
     # TODO- Develop this method as we go along    
     # check that there are no blob bundles for tob_bid
     assert len(tob_bid.blob_bundles) == 0
+    assert len(tob_bid_execution_payload.transctions) == 1
     
     tob_bid_txs = tob_bid_execution_payload.transctions
     rob_bid_txs = rob_bid_execution_payload.transactions
 
     for tob_bid_tx in tob_bid_txs:
         assert !is_tx_blob(tob_bid_tx)
-        assert is_tx_uniswap_swap(tob_bid_tx)
+        assert is_tx_uniswap_eth_usdc_swap(tob_bid_tx)
         assert !is_tx_in_bundle(tob_bid_tx)
+        assert !is_tx_meta(tob_bid_tx)
     
     for rob_bid_tx in rob_bid_txs:
         assert !is_tx_uniswap_swap(rob_bid_tx)
