@@ -94,7 +94,7 @@ The `pubkey` is the BLS aggregate of the builder pubkeys.
 If the `proposer_builder_commitment` for the validator is `FULL_BLOCK`, then this is akin to the BuilderBids we have in the current MEV Relayer.
 
 ```python
-class BuilderBid(Container): # if the validator preference is a TOB_ROB_SPLIT, then this bid is built when the highest value TOB and ROB bid from different builders are assembled by the assembler
+class BuilderBid(Container): # if the validator preference is a TOB_ROB_SPLIT, then this bid is built when the assembler assembles the highest value TOB and ROB bid from different builders
     header: ExecutionPayloadHeader # [Modified in Deneb]
     blinded_blobs_bundle: BlindedBlobsBundle  # [New in Deneb]
     value: uint256 # if this bid is built by the TOB_ROB_SPLIT commitment, then this value is the sum of TOB bid value and ROB bid value.

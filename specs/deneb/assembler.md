@@ -111,11 +111,19 @@ Below we define how to merge the tob_bid and rob_bid to get the transaction list
 execution payload out of
 
 ```python
-def merge_txs(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_payload: ExecutionPayload) -> Transaction[]:
+def merge_txs(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_payload: ExecutionPayload) -> List[Transaction]:
     tob_bid_txs = tob_bid_execution_payload.transactions
     rob_bid_txs = rob_bid_execution_payload.transactions
 
     return tob_bid_txs + rob_bid_txs
+```
+
+```python
+def merge_withdrawals(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_payload: ExecutionPayload) -> List[Transaction]:
+    tob_withdrawals = tob_bid_execution_payload.withdrawals
+    rob_withdrawals = rob_bid_execution_payload.withdrawals
+
+    return tob_withdrawals # the withdrawals of the tob and rob should be the same since they are to be built on the same onPayloadAttributes event
 ```
 
 We do not specify how to get the final payload from the tx list obtained from the above. That activity is left to the implementor. The implementor of the assembler
