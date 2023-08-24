@@ -22,7 +22,7 @@ information:
 
 Fields added to `ValidatorRegistrationV2` which was not there in `ValidatorRegistrationV1`
 
-* `proposer_builder_commitment`: the type of block the proposer wants the builder to build.
+* `proposer_commitment`: the type of block the proposer wants the builder to build.
 
 ### Signing and submitting a registration
 

@@ -10,7 +10,7 @@ Deneb:
           blinded_blobs_bundle:
             $ref: "./blobs_bundle.yaml#/Deneb/BlindedBlobsBundle"
             description: "`BlindedBlobsBundle` to use in block proposal."
-          proposer_builder_commitment:
+          proposer_commitment:
             $ref: "../../beacon-apis/types/primitive.yaml#/ProposerBuilderCommitment"
             description: "`ProposerBuilderCommitment` specifies the type of block which the proposer expects from the builder"
       - $ref: '../bellatrix/bid.yaml#/Bellatrix/BuilderBidCommon'

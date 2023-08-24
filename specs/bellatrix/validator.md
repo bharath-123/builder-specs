@@ -69,7 +69,7 @@ information:
 * `timestamp`: a recent timestamp later than any previously constructed `ValidatorRegistrationV1`.
   Builders use this timestamp as a form of anti-DoS and to sequence registrations.
 * `pubkey`: the validator's public key. Used to identify the beacon chain validator and verify the wrapping signature.
-* `proposer_builder_commitment`: the type of block the proposer wants the builder to build.
+* `proposer_commitment`: the type of block the proposer wants the builder to build.
 
 ### Signing and submitting a registration
 

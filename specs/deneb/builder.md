@@ -86,12 +86,12 @@ class ExecutionPayloadAndBlobsBundle(Container):
 
 Note: `SignedBuilderBid` is updated indirectly. 
 
-Note: In the case, the `proposer_builder_commitment` is `TOB_ROB_SPLIT` which indicates that the TOB and ROB of a block is built by 2 separate builders. 
+Note: In the case, the `proposer_commitment` is `TOB_ROB_SPLIT` which indicates that the TOB and ROB of a block is built by 2 separate builders. 
 The relayer will get seperate bids for the TOB and ROB part of the block. The final payload which the proposer will use will be assembled by the payload assembler. 
 The `BuilderBid` will contain the `header` and `blinded_blobs_bundle` post the assembling of the TOB and ROB bids. 
 The `value` is the sum of the TOB bid value, and the ROB bid value.
 The `pubkey` is the BLS aggregate of the builder pubkeys. 
-If the `proposer_builder_commitment` for the validator is `FULL_BLOCK`, then this is akin to the BuilderBids we have in the current MEV Relayer.
+If the `proposer_commitment` for the validator is `FULL_BLOCK`, then this is akin to the BuilderBids we have in the current MEV Relayer.
 
 ```python
 class BuilderBid(Container): # if the validator preference is a TOB_ROB_SPLIT, then this bid is built when the assembler assembles the highest value TOB and ROB bid from different builders
@@ -103,7 +103,7 @@ class BuilderBid(Container): # if the validator preference is a TOB_ROB_SPLIT, t
 
 ##### `SignedBuilderBid`
 
-Note: In the case, the `proposer_builder_commitment` is `TOB_ROB_SPLIT`
+Note: In the case, the `proposer_commitment` is `TOB_ROB_SPLIT`
 The `signature` field is the BLS aggregate signature of the builder signatures.
 
 ```python
@@ -139,8 +139,8 @@ class BlindedBeaconBlockBody(Container):
 
 #### `ValidatorRegistrationV2`
 
-The `proposer_builder_commitment` field is added which indicates the type of block the proposer wants from the builder. for e.g: a proposer_builder_commitment
-of `FULL_BLOCK` indicates that the proposer wants the highest possible value block built by 1 builder(which is the status quo). Another example, is a proposer_builder_commitment
+The `proposer_commitment` field is added which indicates the type of block the proposer wants from the builder. for e.g: a proposer_commitment
+of `FULL_BLOCK` indicates that the proposer wants the highest possible value block built by 1 builder(which is the status quo). Another example, is a proposer_commitment
 of `TOB_ROB_SPLIT`. This commitment indicates that the proposer wants a block where the TOB(top of the block) and ROB(rest of the block) is built by 2 seperate builders
 to reduce TOB MEV opportunities and make block building more decentralized.
 The validity of commitment should be handled by the trusted relay. The relay should reject payloads built by builders which do not validate the commitments indicated
@@ -151,7 +151,7 @@ class ValidatorRegistrationV2(Container):
     fee_recipient: ExecutionAddress
     gas_limit: uint64
     timestamp: uint64
-    proposer_builder_commitment: string
+    proposer_commitment: string
     pubkey: BLSPubkey
 ```
 
@@ -165,16 +165,16 @@ class SignedValidatorRegistrationV2(Container):
 
 ## Validator registration processing
 
-With the addition of `proposer_builder_commitment`
+With the addition of `proposer_commitment`
 
-### `verify_proposer_builder_commitment`
+### `verify_proposer_commitment`
 
 The list of commitments should be stored in the trusted relayer so that builders can access the proposer commitments to build the suitable block
-Below the proposer_builder_commitments list should be stored in the relayer.
+Below the proposer_commitments list should be stored in the relayer.
 
 ```python
-def verify_proposer_builder_commitment(signed_registration: SignedValidatorRegistrationV2, proposer_builder_commitments: List[string]) -> bool:
-    return signed_registration.proposer_builder_commitment in proposer_builder_commitments # the list of commitments should be known in the builder n/w
+def verify_proposer_commitment(signed_registration: SignedValidatorRegistrationV2, proposer_commitments: List[string]) -> bool:
+    return signed_registration.proposer_commitment in proposer_commitments # the list of commitments should be known in the builder n/w
 ```
 
 ### `process_registration_v2`
@@ -202,7 +202,7 @@ def process_registration_v2(state: BeaconState,
     assert registration.timestamp <= current_timestamp + MAX_REGISTRATION_LOOKAHEAD
     
     # Verify whether the proposer builder commitment is valid i.e it matches the known supported commitments.
-    assert verify_proposer_builder_commitment(state, validator)
+    assert verify_proposer_commitment(state, validator)
 
     # Verify timestamp is not less than the timestamp of the previous registration (if it exists)
     if registration.pubkey in registrations:
@@ -216,12 +216,12 @@ def process_registration_v2(state: BeaconState,
 
 #### Constructing the `ExecutionPayloadHeader`
 
-We add the `proposer_builder_commitment` field for validators in the `ValidatorRegistrationV2`. This field indicates the type of block the proposer wants. 
-E.g., .a proposer_builder_commitment of `FULL_BLOCK` indicates that the proposer wants the highest possible value block built by one builder(the status quo). 
-Another example is a proposer_builder_commitment of `TOB_ROB_SPLIT`. This commitment indicates that the proposer wants a block where the TOB(top of the block) 
+We add the `proposer_commitment` field for validators in the `ValidatorRegistrationV2`. This field indicates the type of block the proposer wants. 
+E.g., .a proposer_commitment of `FULL_BLOCK` indicates that the proposer wants the highest possible value block built by one builder(the status quo). 
+Another example is a proposer_commitment of `TOB_ROB_SPLIT`. This commitment indicates that the proposer wants a block where the TOB(top of the block) 
 and ROB(rest of the block) is built by two separate builders to reduce the chances of one builder dominating TOB MEV opportunities and make block building more decentralised.
 The following conditions apply to both `FULL_BLOCK` and `TOB_ROB_SPLIT` commitment
-1. The builder MUST provide a bid for an execution payload which fulfils the block validity conditions set in the relay according to `proposer_builder_commitment`.
+1. The builder MUST provide a bid for an execution payload which fulfils the block validity conditions set in the relay according to `proposer_commitment`.
 2. The builder MUST provide a bid for the valid execution payload that can pay the `fee_recipient` in the validator registration for the registered `pubkey` the most.
 The following conditions apply to the `FULL_BLOCK` commitment
 1. The builder MUST build an execution payload whose `gas_limit` is equal to the `gas_limit` of the latest registration for `pubkey` or as close as possibl.e under the consensus rules.
