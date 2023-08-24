@@ -43,7 +43,7 @@ def is_tx_blob(tx: Transaction) -> bool:
 ```
 
 ```python
-def is_tx_uniswap_eth_usdc_swap(tx: Transaction) -> bool:
+def is_tx_uniswap_swap(tx: Transaction) -> bool:
     pass
 ```
 
@@ -65,29 +65,25 @@ For the first iteration, we will enforce only one ETH/USDC uniswap swap tx in th
 this as we go along.
 
 ```python
-def check_state_interference(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_payload: ExecutionPaylod):
+def check_state_interference(tob_bid_execution_payload: ExecutionPayload):
     """
     Ensure tob bid has only one uniswap ETH/USDC swap tx at the top. It shouldn't have bundles, blob txs and meta txs.
-    Ensure rob bid has no unswap swap txs. We can include bundles and blob txs.
+    We don't have to sanity check the ROB bid. 
     This method can be treated as a black box and can be evolved as we go along with developing pepc-boost.
     """    
     # TODO - Figure out how to check for bundle
     # TODO- Develop this method as we go along    
     # check that there are no blob bundles for tob_bid
     assert len(tob_bid.blob_bundles) == 0
-    assert len(tob_bid_execution_payload.transctions) == 1
+    assert len(tob_bid_execution_payload.transctions) == 3 # 1 tx for the uniswap ETH/USDC swap, 1 for the builder payout, 1 for the validator payout
     
     tob_bid_txs = tob_bid_execution_payload.transctions
-    rob_bid_txs = rob_bid_execution_payload.transactions
 
     for tob_bid_tx in tob_bid_txs:
         assert !is_tx_blob(tob_bid_tx)
-        assert is_tx_uniswap_eth_usdc_swap(tob_bid_tx)
+        assert is_tx_uniswap_swap(tob_bid_tx)
         assert !is_tx_in_bundle(tob_bid_tx)
         assert !is_tx_meta(tob_bid_tx)
-    
-    for rob_bid_tx in rob_bid_txs:
-        assert !is_tx_uniswap_swap(rob_bid_tx)
 ```
 
 Below we define a method to check if the tob and rob builder bids which are to be sent to the assembler to build an aggregate builder bid are compatible and valid.
@@ -125,7 +121,15 @@ def merge_txs(tob_bid_execution_payload: ExecutionPayload, rob_bid_execution_pay
     tob_bid_txs = tob_bid_execution_payload.transactions
     rob_bid_txs = rob_bid_execution_payload.transactions
 
-    return tob_bid_txs + rob_bid_txs
+    aggregated_tx_list = tob_bid_txs + rob_bid_txs
+    
+    '''
+    We need to validate for nonce reuse and out of order nonces. 
+    If there is a nonce re-use in the TOB and ROB, we can drop the tx in the ROB execution payload.
+    If there nonces are out of place, then we can sort the tx list to ensure the nonces are in the right order
+    '''
+    
+    return aggregated_tx_list
 ```
 
 We can use the withdrawal list of either the TOB or ROB bid because they should be built on the same parent block
