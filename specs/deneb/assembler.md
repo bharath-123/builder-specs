@@ -61,8 +61,8 @@ In the payload assembler, we merge txs sent by TOB and ROB builders and build on
 state interference which could cause an invalid state transition. To avoid such a scenario, we enforce certain rules on the type of txs which can be added to the 
 TOB bid execution payload to avoid state interference.
 
-For the first iteration, we will enforce only one ETH/USDC uniswap swap tx in the TOB bid and no ETH/USDC uniswap swap tx in the ROB bid. We can develop
-this as we go along.
+For the first iteration, we will enforce only one ETH/USDC uniswap swap tx in the TOB bid and no ETH/USDC uniswap swap tx in the ROB bid. If there is no
+uniswap ETH/USDC swap, we can just add any other uniswap swap tx on the TOB. We can develop this as we go along.
 
 ```python
 def check_state_interference(tob_bid_execution_payload: ExecutionPayload):
@@ -75,7 +75,7 @@ def check_state_interference(tob_bid_execution_payload: ExecutionPayload):
     # TODO- Develop this method as we go along    
     # check that there are no blob bundles for tob_bid
     assert len(tob_bid.blob_bundles) == 0
-    assert len(tob_bid_execution_payload.transctions) == 3 # 1 tx for the uniswap ETH/USDC swap, 1 for the builder payout, 1 for the validator payout
+    assert len(tob_bid_execution_payload.transctions) < 4 # 1 tx for the uniswap ETH/USDC swap, 1 for the builder payout, 1 for the validator payout. It can also have 0 txs
     
     tob_bid_txs = tob_bid_execution_payload.transctions
 
