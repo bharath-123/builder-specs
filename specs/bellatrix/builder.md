@@ -78,7 +78,7 @@ Bellatrix).
 ##### `BuilderBid`
 
 ```python
-class BuilderBid(Container):
+class BuilderBid(Container): 
     header: ExecutionPayloadHeader
     value: uint256
     pubkey: BLSPubkey

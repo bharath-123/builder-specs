@@ -32,7 +32,14 @@ participate in an external builder network.
 
 At a high-level, there is a registration step validators must perform ahead of any proposal duties so builders know how
 to craft blocks for their specific proposal. Having performed the registration, a validator waits until it is their turn
-to propose the next block in the chain. The validator then requests an `ExecutionPayload` from the external builder
+to propose the next block in the chain. During the registration, a validator specifies a commitment which indicates the type of block
+they want. for e.g: FULL_BLOCK indicates that the proposer wants a full block from 1 builder. TOB_ROB_SPLIT indicates 
+that the proposer wants a block where the TOB and ROB section of the block has been built by separate builders. The relayer is responsible
+for ensuring that the commitment is fulfilled by the validator by validating the block that the builder sends.
+The builder reads these commitments from the validator registration object and builds a block which matches to commitment specified
+by the validator.
+
+The validator then requests an `ExecutionPayload` from the external builder
 network to put into their `SignedBeaconBlock` in lieu of one they could build locally.
 
 ## Prerequisites
@@ -62,6 +69,7 @@ information:
 * `timestamp`: a recent timestamp later than any previously constructed `ValidatorRegistrationV1`.
   Builders use this timestamp as a form of anti-DoS and to sequence registrations.
 * `pubkey`: the validator's public key. Used to identify the beacon chain validator and verify the wrapping signature.
+* `proposer_commitment`: the type of block the proposer wants the builder to build.
 
 ### Signing and submitting a registration
 
