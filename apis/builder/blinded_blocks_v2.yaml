@@ -12,6 +12,8 @@ post:
 
     The builder MUST publish the signed unblinded beacon block and blobs to the network. 
 
+    After Fulu, this endpoint will not support JSON requests and responses. Client MUST send an SSZ encoded request and be able to receive an SSZ encoded response.
+
     Note: SSZ support can be determined by requesting an SSZ encoded response in the `getHeader`
     request.
   tags:

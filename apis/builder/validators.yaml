@@ -11,7 +11,7 @@ post:
     registration is invalid, then the builder MUST return an error response
     (400) with a description of the validation failure.
 
-    After Fulu, this endpoint will not support JSON requests and responses. Client will have to send an SSZ encoded request and receive an SSZ encoded response.
+    After Fulu, this endpoint will not support JSON requests and responses. Client MUST send an SSZ encoded request and be able to receive an SSZ encoded response.
   tags:
     - Builder
   requestBody:

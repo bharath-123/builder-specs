@@ -12,7 +12,7 @@ get:
 
     After Deneb, return the KZG commitments for any associated blobs attached to the execution payload.
 
-    After Fulu, this endpoint will not support JSON requests and responses. Client will have to send an SSZ encoded request and receive an SSZ encoded response.
+    After Fulu, this endpoint will not support JSON requests and responses. Client MUST send an SSZ encoded request and be able to receive an SSZ encoded response.
   tags:
     - Builder
   parameters:
